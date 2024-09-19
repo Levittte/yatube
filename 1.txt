@@ -1,0 +1,247 @@
+Arina, [19.09.2024 10:43]
+ChatGPT4 | Midjourney:
+import com.example.demo.controller.DiscrepancyController;
+import com.example.demo.model.Discrepancy;
+import com.example.demo.service.DiscrepancyService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(DiscrepancyController.class)
+public class DiscrepancyControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private DiscrepancyService discrepancyService;
+
+    @Test
+    public void testCreateDiscrepancy() throws Exception {
+        // Мокируем поведение DiscrepancyService
+        Discrepancy discrepancy = new Discrepancy();
+        when(discrepancyService.createDiscrepancy(discrepancy)).thenReturn(discrepancy);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/discrepancies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(discrepancy)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateDiscrepancy() throws Exception {
+        // Мокируем поведение DiscrepancyService
+        Discrepancy discrepancy = new Discrepancy();
+        when(discrepancyService.updateDiscrepancy(discrepancy)).thenReturn(discrepancy);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/discrepancies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(discrepancy)))
+                .andExpect(status().isOk());
+    }
+
+    // Добавьте тесты для других методов контроллера (getFilteredDiscrepancies)
+
+    // Вспомогательный метод для преобразования объекта в JSON-байты
+    private static class TestUtil {
+        public static byte[] convertObjectToJsonBytes(Object object) throws Exception {
+            // Используйте ObjectMapper для сериализации объекта в JSON
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsBytes(object);
+        }
+    }
+}
+Объяснение:
+
+* @WebMvcTest:  Эта аннотация используется для тестирования только контроллера без запуска всего контекста Spring Boot.
+* @MockBean:  Эта аннотация используется для мокирования сервиса DiscrepancyService.
+* when():  Метод when()  из Mockito используется для мокирования возвращаемого значения метода createDiscrepancy и updateDiscrepancy сервиса.
+* MockMvc:  MockMvc используется для имитации HTTP-запросов к контроллеру.
+* MockMvcRequestBuilders:  Используется для создания HTTP-запросов различного типа (POST, PUT, GET, DELETE).
+* MockMvcResultMatchers:  Используется для проверки ожидаемых результатов запросов.
+* TestUtil.convertObjectToJsonBytes():  Вспомогательный метод для преобразования объекта в JSON-байты для передачи в теле запроса.
+
+Рекомендации:
+
+* Покрытие кода:  Добавьте тесты для всех методов контроллера.
+* Разные сценарии:  Напишите тесты для различных сценариев, включая успешные и неуспешные запросы, валидацию данных и обработку ошибок.
+* Mockito:  Изучите Mockito для более детального mock'ирования объектов и проверки поведения.
+
+Надеюсь, этот пример поможет вам написать качественные тесты для контроллера с использованием @WebMvcTest!
+
+import com.example.demo.controller.CalculationController;
+import com.example.demo.model.Calculation;
+import com.example.demo.service.CalculationService;
+
+Arina, [19.09.2024 10:43]
+import com.example.demo.service.ClasscountAuthorizationService;
+import com.example.demo.service.UserDetailsImpl;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(CalculationController.class)
+public class CalculationControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private CalculationService calculationService;
+
+    @MockBean
+    private ClasscountAuthorizationService classcountAuthorizationService;
+
+    @MockBean
+    private UserDetailsImpl userDetails;
+
+    @Test
+    public void testGetCalculation() throws Exception {
+        // Мокируем поведение CalculationService
+        Calculation calculation = new Calculation();
+        when(calculationService.getCalculation(1L)).thenReturn(calculation);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/calculations/{id}", 1L)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetCalculations() throws Exception {
+        // Мокируем поведение CalculationService
+        // (например, возвращаем список вычислений)
+        when(calculationService.getCalculations(null, null, null, null, null)).thenReturn(null); // Мокируем ответ
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/calculations")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetShortCalculations() throws Exception {
+        // Мокируем поведение CalculationService
+        // (например, возвращаем список вычислений)
+        when(calculationService.getShortCalculations(null, null, null, null)).thenReturn(null); // Мокируем ответ
+
+        mockMvc.perform(MockMvcRequestBuilders
+
+                .get("/calculations/short")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCreateCalculation() throws Exception {
+        // Мокируем поведение CalculationService
+        Calculation calculation = new Calculation();
+        when(calculationService.createCalculation(calculation)).thenReturn(calculation);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/calculations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(calculation)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateCalculation() throws Exception {
+        // Мокируем поведение CalculationService
+        Calculation calculation = new Calculation();
+        when(calculationService.updateCalculation(calculation)).thenReturn(calculation);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/calculations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(calculation)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testVerifyCalculation() throws Exception {
+        // Мокируем поведение CalculationService
+        Calculation calculation = new Calculation();
+        when(calculationService.verifyCalculation(calculation)).thenReturn(calculation);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/calculations/verify")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(TestUtil.convertObjectToJsonBytes(calculation)))
+                .andExpect(status().isOk());
+    }
+
+Arina, [19.09.2024 10:43]
+    @Test
+    public void testFinishCalculation() throws Exception {
+        // Мокируем поведение CalculationService
+        // (например, возвращаем список вычислений)
+        when(calculationService.updateCalculation(null)).thenReturn(null); // Мокируем ответ
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/calculations/finish")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testOnVerification() throws Exception {
+        // Мокируем поведение CalculationService
+        // (например, возвращаем список вычислений)
+        when(calculationService.updateCalculation(null)).thenReturn(null); // Мокируем ответ
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/calculations/onverification")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    // Вспомогательный метод для преобразования объекта в JSON-байты
+    private static class TestUtil {
+        public static byte[] convertObjectToJsonBytes(Object object) throws Exception {
+            // Используйте ObjectMapper для сериализации объекта в JSON
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsBytes(object);
+        }
+    }
+}
+
+@Test
+public void testGetCalculationWithAuthorization() throws Exception {
+    // Мокируем поведение CalculationService
+    Calculation calculation = new Calculation();
+    when(calculationService.getCalculation(1L)).thenReturn(calculation);
+
+    // Мокируем поведение авторизации
+    when(classcountAuthorizationService.logAuthorization()).thenReturn(true);
+
+    mockMvc.perform(MockMvcRequestBuilders
+            .get("/calculations/{id}", 1L)
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+}
+
+mockMvc.perform(MockMvcRequestBuilders
+        .get("/calculations/{id}", 1L)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("calculation"));
